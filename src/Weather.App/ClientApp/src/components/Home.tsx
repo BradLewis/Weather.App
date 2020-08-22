@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 
-export class Home extends Component {
+interface IProps { }
+interface IState {
+  name: String;
+}
+
+export class Home extends Component<IProps, IState> {
   static displayName = Home.name;
 
-  render () {
+  render() {
     return (
       <div>
         <h1>Hello, world!</h1>

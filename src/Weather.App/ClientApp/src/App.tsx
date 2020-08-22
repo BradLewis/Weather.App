@@ -12,12 +12,11 @@ export default class App extends Component {
 
   render() {
     return (
-      <p>Test</p>
-      // <Layout>
-      //   <Route exact path='/' component={Home} />
-      //   <Route path='/counter' component={Counter} />
-      //   <Route path='/fetch-data' component={FetchData} />
-      // </Layout>
+      <Layout>
+        <Route exact path='/' component={Home} />
+        <Route path='/counter' component={Counter} />
+        <Route path='/fetch-data' component={FetchData} />
+      </Layout>
     );
   }
 }

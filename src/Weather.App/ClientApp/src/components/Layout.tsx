@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import { Container } from 'reactstrap';
 import { NavMenu } from './NavMenu';
 
-export class Layout extends Component {
+interface IProps { }
+interface IState { }
+
+export class Layout extends Component<IProps, IState> {
   static displayName = Layout.name;
 
-  render () {
+  render() {
     return (
       <div>
         <NavMenu />
