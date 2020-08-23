@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 interface IProps { }
 
 interface IState {
-  forecasts: Array<any>;
+  stations: Array<any>;
   loading: Boolean;
+  name: String;
 }
 
 export class FetchData extends Component<IProps, IState> {
@@ -12,14 +13,10 @@ export class FetchData extends Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
-    this.state = { forecasts: [], loading: true };
+    this.state = { stations: [], loading: false, name: "" };
   }
 
-  componentDidMount() {
-    this.populateWeatherData();
-  }
-
-  static renderForecastsTable(forecasts: Array<any>) {
+  static renderForecastsTable(stations: Array<any>) {
     return (
       <table className='table table-striped' aria-labelledby="tabelLabel">
         <thead>
@@ -31,7 +28,7 @@ export class FetchData extends Component<IProps, IState> {
           </tr>
         </thead>
         <tbody>
-          {forecasts.map(forecast =>
+          {stations.map(forecast =>
             <tr key={forecast.date}>
               <td>{forecast.date}</td>
               <td>{forecast.temperatureC}</td>
@@ -44,23 +41,32 @@ export class FetchData extends Component<IProps, IState> {
     );
   }
 
+  setName = (event: React.FormEvent<HTMLInputElement>) => {
+    console.log("setting name")
+    this.setState({ name: event.currentTarget.value })
+  }
+
   render() {
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
-      : FetchData.renderForecastsTable(this.state.forecasts);
+      : FetchData.renderForecastsTable(this.state.stations);
 
     return (
       <div>
         <h1 id="tabelLabel" >Weather forecast</h1>
         <p>This component demonstrates fetching data from the server.</p>
+        <input type="text" onChange={this.setName} />
+        <button className="btn btn-primary" onClick={this.fetchStationData}>Increment</button>
         {contents}
       </div>
     );
   }
-
-  async populateWeatherData() {
-    const response = await fetch('weatherforecast');
+  fetchStationData = async () => {
+    this.setState({ loading: true });
+    console.log("Fetching...");
+    const response = await fetch(`weather/station/name/${this.state.name}`);
     const data = await response.json();
-    this.setState({ forecasts: data, loading: false });
+    console.log(data);
+    this.setState({ stations: data, loading: false });
   }
 }
