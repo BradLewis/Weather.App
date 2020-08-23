@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { Station } from './models/Station';
+import { http } from "../http";
 
 interface IProps { }
 
 interface IState {
-  stations: Array<any>;
+  stations: Array<Station>;
   loading: Boolean;
   name: String;
 }
@@ -16,24 +18,30 @@ export class FetchData extends Component<IProps, IState> {
     this.state = { stations: [], loading: false, name: "" };
   }
 
-  static renderForecastsTable(stations: Array<any>) {
+  private renderForecastsTable(stations: Array<Station>) {
     return (
       <table className='table table-striped' aria-labelledby="tabelLabel">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
+            <th>Name</th>
+            <th>Province</th>
+            <th>Latitude (N)</th>
+            <th>Longitude (E)</th>
+            <th>Elevation (m)</th>
+            <th>First Year</th>
+            <th>Last Year</th>
           </tr>
         </thead>
         <tbody>
-          {stations.map(forecast =>
-            <tr key={forecast.date}>
-              <td>{forecast.date}</td>
-              <td>{forecast.temperatureC}</td>
-              <td>{forecast.temperatureF}</td>
-              <td>{forecast.summary}</td>
+          {stations.map(station =>
+            <tr key={station.id}>
+              <td>{station.stationName}</td>
+              <td>{station.province}</td>
+              <td>{station.latitude}</td>
+              <td>{station.longitude}</td>
+              <td>{station.elevation}</td>
+              <td>{station.firstYear}</td>
+              <td>{station.lastYear}</td>
             </tr>
           )}
         </tbody>
@@ -41,15 +49,14 @@ export class FetchData extends Component<IProps, IState> {
     );
   }
 
-  setName = (event: React.FormEvent<HTMLInputElement>) => {
-    console.log("setting name")
+  private setName = (event: React.FormEvent<HTMLInputElement>) => {
     this.setState({ name: event.currentTarget.value })
   }
 
-  render() {
+  public render() {
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
-      : FetchData.renderForecastsTable(this.state.stations);
+      : this.renderForecastsTable(this.state.stations);
 
     return (
       <div>
@@ -61,12 +68,10 @@ export class FetchData extends Component<IProps, IState> {
       </div>
     );
   }
-  fetchStationData = async () => {
+
+  private fetchStationData = async () => {
     this.setState({ loading: true });
-    console.log("Fetching...");
-    const response = await fetch(`weather/station/name/${this.state.name}`);
-    const data = await response.json();
-    console.log(data);
+    const data = await http<Array<Station>>(`weather/station/name/${this.state.name}`);
     this.setState({ stations: data, loading: false });
   }
 }

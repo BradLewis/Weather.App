@@ -30,7 +30,11 @@ namespace Weather.App.Clients
                 var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
                 var response = await client.SendAsync(request).ConfigureAwait(false);
                 var responseStream = await response.Content.ReadAsStreamAsync();
-                var result = await JsonSerializer.DeserializeAsync<List<Station>>(responseStream);
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                var result = await JsonSerializer.DeserializeAsync<List<Station>>(responseStream, options);
                 return result;
             }
         }
